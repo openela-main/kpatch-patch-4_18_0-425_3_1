@@ -1,0 +1,49 @@
+From ea6a6f2d23a0af0e2cde8c99f0b7f0becf6beee5 Mon Sep 17 00:00:00 2001
+From: Joe Lawrence <joe.lawrence@redhat.com>
+Date: Thu, 8 Dec 2022 12:51:23 -0500
+Subject: [PATCH] v0.9.6 backport: MR!1281 ("create-diff-object: add support
+ for .return_sites section (x86)")
+Content-type: text/plain
+
+commit 33368a88cdf875b0edd02b0dfd3356a7e93b24db
+Author: Jonathan Dobson <jdobson@redhat.com>
+Date:   Sat Jul 16 15:46:54 2022 -0600
+
+    create-diff-object: add support for .return_sites section (x86)
+
+Signed-off-by: Joe Lawrence <joe.lawrence@redhat.com>
+---
+ kpatch-build/create-diff-object.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/kpatch-build/create-diff-object.c b/kpatch-build/create-diff-object.c
+index 826741d07fc7..a79ec7985135 100644
+--- a/kpatch-build/create-diff-object.c
++++ b/kpatch-build/create-diff-object.c
+@@ -2132,6 +2132,11 @@ static int retpoline_sites_group_size(struct kpatch_elf *kelf, int offset)
+ 	return 4;
+ }
+ 
++static int return_sites_group_size(struct kpatch_elf *kelf, int offset)
++{
++	return 4;
++}
++
+ static int fixup_entry_group_size(struct kpatch_elf *kelf, int offset)
+ {
+ 	static int size = 0;
+@@ -2258,6 +2263,11 @@ static struct special_section special_sections[] = {
+ 		.arch		= X86_64,
+ 		.group_size	= retpoline_sites_group_size,
+ 	},
++	{
++		.name		= ".return_sites",
++		.arch		= X86_64,
++		.group_size	= return_sites_group_size,
++	},
+ 	{
+ 		.name		= "__ftr_fixup",
+ 		.arch		= PPC64,
+-- 
+2.38.1
+
